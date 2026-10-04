@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     gemini_api_key: str = ""
     anthropic_api_key: str = ""
     openai_api_key: str = ""
-    available_models: str = "anthropic:claude-haiku-4-5-20251001,gemini:gemini-2.5-flash,openai:gpt-4o-mini"
+    available_models: str = "anthropic:claude-haiku-4-5-20251001,gemini:gemini-3.1-flash-lite,openai:gpt-4o-mini"
     max_steps: int = 6                         # default when a request gives none
     hard_max_steps: int = 12                   # ceiling even if a request asks for more
     max_tool_retries: int = 2                  # tool retries AND contract-repair attempts
