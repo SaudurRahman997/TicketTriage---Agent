@@ -1,0 +1,7 @@
+fastapi==0.142.2
+uvicorn==0.54.0
+pydantic==2.13.5
+pydantic-settings==2.15.0
+langchain-core==1.6.6
+httpx==0.28.1
+# Providers are called through httpx (Anthropic / Gemini REST); no extra SDK needed.

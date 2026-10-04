@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TicketTriage Sentinel</title><link rel="stylesheet" href="/static/style.css"></head><body>
+<h1>TicketTriage Sentinel <small>sandbox support-ticket triage agent</small></h1>
+<div class="bar"><label>Model <select id="model"></select></label>
+<button id="newchat">New chat</button> <span>Status: <b id="status">idle</b></span> <span id="meta"></span></div>
+<div class="cols"><section><h3>Chat</h3><div id="chat"></div>
+<textarea id="ctx" rows="3" placeholder="Optional external context / pasted note (treated as untrusted data)"></textarea>
+<div class="row"><input id="msg" placeholder="e.g. Triage ticket T-1002"><button id="send">Send</button></div></section>
+<section><h3>Action / tool timeline</h3><ol id="timeline"></ol><h3>Observations</h3><pre id="obs"></pre></section></div>
+<script src="/static/app.js"></script></body></html>
