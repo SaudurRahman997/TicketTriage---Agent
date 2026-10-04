@@ -12,6 +12,7 @@ from .config import PRICES, Settings
 from .llm import BudgetError, LLMError
 from .models import AgentDecision, ArenaResponse
 from .prompts import SYSTEM_PROMPT, build_turn_prompt
+from .scope import is_in_ticket_scope, out_of_scope_message
 from .tools import REGISTRY, RESTRICTED_ACTIONS, ToolBox, ToolFailure, describe_tools, norm_id
 
 TERMINAL = {"needs_clarification": "clarification_requested", "completed": "goal_completed",
@@ -129,6 +130,23 @@ def run_agent(*, task: str, external_context, max_steps: int, fault: str, histor
     if len(task) > settings.max_task_chars:
         state.errors.append("task_too_large")
         return finish("budget_exceeded", "input_too_large", "The request is too large for one bounded run. Please split it into smaller tasks.")
+
+    # Enforce the narrow operational scope before any model call or tool action.
+    # External context is deliberately excluded: notes cannot redefine the user's goal.
+    if not is_in_ticket_scope(task, history):
+        return finish("needs_clarification", "out_of_scope", out_of_scope_message(task))
+
+    # For a ticket operation that needs an identifier, clarify before any tool call.
+    import re
+    ticket_id_found = bool(re.search(r"\bT-\d+\b", task.upper()))
+    ticket_operation = bool(re.search(
+        r"\b(?:ticket|tickets|support case|customer issue|triag\w*|classif\w*|"
+        r"escalat\w*|draft\w*|clos\w*|delet\w*|refund\w*)\b",
+        task,
+        re.IGNORECASE,
+    ))
+    if ticket_operation and not ticket_id_found and not re.search(r"\bA\d{3,}\b", task, re.IGNORECASE):
+        return finish("needs_clarification", "clarification_requested", "Which ticket id should I act on?")
 
     ext_text = "\n".join(f"[{i.source}] {i.content}" for i in external_context)[:settings.max_external_chars]
     tool_text = describe_tools()

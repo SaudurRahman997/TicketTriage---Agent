@@ -81,13 +81,18 @@ Prices in `config.PRICES` are estimates — verify before quoting.
 `arena_config.fault` (string or `{"type": …}`) fires **once, at the first matching operation**: `tool_timeout` (first tool call raises, retried),
 `malformed_tool_output` (first tool returns garbage, rejected by the output contract, retried), `invalid_agent_decision` (first model output replaced by an invalid decision, repaired).
 
-## 9. Model selection (fill in after running)
-Run `python evaluation/model_comparison.py --models anthropic:claude-haiku-4-5-20251001,gemini:gemini-2.5-flash` (needs your keys) and paste
-`evaluation/model_comparison.md` here, plus 3–4 lines of rationale tying the winner to reliability, latency, context window and cost.
+## 9. Expected model comparison (hypotheses, not measured results)
 
-| model | task success | contract-valid | correct final status | avg latency s | avg in tokens | avg out tokens | est. cost / case |
-|---|---|---|---|---|---|---|---|
-| _TODO — not yet measured_ | | | | | | | |
+The following is an expectation-based comparison of two configured candidates. It is **not experimental evidence**: no pass rate, latency, token-use, or per-case cost is predicted here. The assignment's model-selection experiment still requires running the same representative cases on both models and recording the observed results.
+
+| model | expected strengths | expected trade-offs | context window | published standard API price (USD / 1M tokens) | measurement status |
+|---|---|---|---|---|---|
+| `gemini:gemini-3.1-flash-lite` | Designed for low-latency, high-volume and lightweight agent tasks; likely the faster option for short ticket requests. | Higher published input/output token rates than GPT-4o mini; actual task reliability and latency must be measured on this agent. | 1M input / 64K output tokens | $0.25 input / $1.50 output | Expected only; not measured |
+| `openai:gpt-4o-mini` | Focused small model; lower published token rates and ample context for this bounded workflow. | May have higher latency than Flash-Lite; task success and structured-decision reliability must be measured. | 128K tokens | $0.15 input / $0.60 output | Expected only; not measured |
+
+The agent retains at most **24,000 characters** of chat history and requests at most **512 output tokens per model call**, so either model's published context window is larger than this application's configured history limit. Based on published standard rates, GPT-4o mini is expected to cost less per token, while Gemini Flash-Lite is expected to favor response speed. These are hypotheses, not observed per-run costs or latency. Actual cost comparison also needs complete provider token-usage data. See the providers' [Gemini 3.1 Flash-Lite model details and pricing](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite) and [GPT-4o mini model details](https://developers.openai.com/api/docs/models/gpt-4o-mini).
+
+To perform the required experiment with the same public cases, run `python evaluation/model_comparison.py --models gemini:gemini-3.1-flash-lite,openai:gpt-4o-mini` after configuring both API keys. The script writes `evaluation/model_comparison.md`. Replace this expected comparison with measured results and add a rationale based on observed reliability, latency, context needs, and cost before submission.
 
 ## 10. Run locally
 ```powershell

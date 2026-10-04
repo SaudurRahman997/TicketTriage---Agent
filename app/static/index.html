@@ -1,10 +1,65 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TicketTriage Sentinel</title><link rel="stylesheet" href="/static/style.css"></head><body>
-<h1>TicketTriage Sentinel <small>sandbox support-ticket triage agent</small></h1>
-<div class="bar"><label>Model <select id="model"></select></label>
-<button id="newchat">New chat</button> <span>Status: <b id="status">idle</b></span> <span id="meta"></span></div>
-<div class="cols"><section><h3>Chat</h3><div id="chat"></div>
-<textarea id="ctx" rows="3" placeholder="Optional external context / pasted note (treated as untrusted data)"></textarea>
-<div class="row"><input id="msg" placeholder="e.g. Triage ticket T-1002"><button id="send">Send</button></div></section>
-<section><h3>Action / tool timeline</h3><ol id="timeline"></ol><h3>Observations</h3><pre id="obs"></pre></section></div>
-<script src="/static/app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#070b16" />
+  <title>TicketTriage Sentinel</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="top">
+      <div class="branding">
+        <div class="eyebrow">Support operations · AI assistant</div>
+        <h1>TicketTriage <span class="accent">Sentinel</span></h1>
+        <p class="tag">A focused workspace for safer, faster ticket triage.</p>
+      </div>
+      <div class="controls">
+        <label class="model" for="model">Model
+          <select id="model" aria-label="Choose model"></select>
+        </label>
+        <div class="status-block">
+          <button id="newchat" class="btn" type="button">＋ New chat</button>
+          <span class="status-label">Run status</span>
+          <span id="status" class="badge">Ready</span>
+          <div id="meta" class="meta">Your sandbox queue is ready</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel chat-panel" aria-label="Ticket triage chat">
+        <div class="panel-heading">
+          <h2>Conversation</h2>
+          <span class="panel-kicker">Sandbox queue · actions are traceable</span>
+        </div>
+        <div id="chat" class="chat-window" aria-live="polite" aria-label="Conversation messages">
+          <div class="welcome" id="welcome">
+            <div class="welcome-mark">✦</div>
+            <strong>What can I help you triage?</strong>
+            <span>Try “Triage ticket T-1002 and draft a reply.” I can read, classify, draft, or route sandbox tickets.</span>
+          </div>
+        </div>
+        <details class="context-box">
+          <summary>Add optional context <span>· treated as untrusted data</span></summary>
+          <textarea id="ctx" rows="2" placeholder="Paste a note or supporting context"></textarea>
+        </details>
+        <form id="composer" class="composer">
+          <input id="msg" placeholder="Ask about a support ticket…" aria-label="Message input" autocomplete="off" />
+          <button id="send" class="btn primary" type="submit">Send <span aria-hidden="true">↗</span></button>
+        </form>
+      </section>
+
+      <aside class="panel side-panel" aria-label="Run details">
+        <div class="side-heading"><span class="icon">⌁</span> Run activity</div>
+        <div class="section-label">Action timeline <small id="event-count">0 events</small></div>
+        <ol id="timeline" class="timeline"><li class="empty-state">Your agent’s decisions will appear here.</li></ol>
+        <div class="section-label">Tool observations <small>Sandbox output</small></div>
+        <pre id="obs" class="observations">Ticket reads and tool results will appear here.</pre>
+      </aside>
+    </main>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
